@@ -20,15 +20,17 @@ public class GameController : MonoBehaviour
 
     // Params
     public Camera vrCam;
+    public GameObject console;
     public GameObject customerPrefab;
 
     // Consts
     public const int customerCount = 4;
     public const float waitPerCustomer = 10.0f;
-    public readonly Vector3 xfOffset = new Vector3(-2.0f, 0.0f, 0.0f);
+    public readonly Vector3 xfOffset = new Vector3(-3.0f, 0.0f, 0.0f);
     public const float moveTime = 1.5f;
 
     // State
+    ConsoleController consoleCtrl;
     List<GameObject> customers;
 
     // Start is called before the first frame update
@@ -38,6 +40,7 @@ public class GameController : MonoBehaviour
         vrCam.transform.position = transform.position;
         vrCam.transform.rotation = transform.rotation;
 
+        consoleCtrl = console.GetComponent<ConsoleController>();
         customers = new List<GameObject>();
 
         // Spawn the other customers
@@ -45,12 +48,18 @@ public class GameController : MonoBehaviour
             customers.Add(Instantiate(customerPrefab, transform.position + new Vector3(0.0f, -1.5f, 0.0f) + i * xfOffset, Quaternion.identity));
         }
 
+        // We need this line to make the line movement work, not 100% sure why
+        customers.Reverse();
+
         // Begin the line movement procedure
         StartCoroutine(LineMovement());
     }
 
     IEnumerator LineMovement() {
         for (int i = 0; i < customerCount - 1; i++) {
+            // Log status.
+            consoleCtrl.AddLineCharwise("Line status: <b><color=orange>position " + (customerCount - 1 - i) + "</color></b>", 80);
+
             // First, wait for the waitPerCustomer.
             yield return new WaitForSeconds(waitPerCustomer);
 
@@ -67,7 +76,7 @@ public class GameController : MonoBehaviour
 
     IEnumerator LerpPos(GameObject obj, Vector3 delta, float time)
     {
-       Vector3 start  = obj.transform.position;
+       Vector3 start = obj.transform.position;
        Vector3 target = start + delta;
 
        float elapsedTime = 0;
