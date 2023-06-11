@@ -14,3 +14,6 @@
   - https://www.youtube.com/watch?v=BYS2NN1bWS4
   - https://developer.oculus.com/documentation/unity/unity-isdk-ray-interaction/
 - Grabbing things: https://developer.oculus.com/documentation/unity/unity-isdk-touch-hand-grab-interaction
+- voice stuff
+  - https://developer.oculus.com/documentation/unity/voice-sdk-transcription/
+  - https://developer.oculus.com/documentation/unity/voice-sdk-visual-feedback/
