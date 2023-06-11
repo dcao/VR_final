@@ -4,6 +4,8 @@
 #
 .DS_Store
 
+out_BurstDebugInformation_DoNotShip/
+
 /[Ll]ibrary/
 /[Tt]emp/
 /[Oo]bj/

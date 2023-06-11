@@ -8,7 +8,8 @@
 
 ## Resources used
 
-- Hand/UI interaction: https://www.youtube.com/watch?v=waFJcar3cwM
+- Hand/UI interaction: See `RayExamples` scene.
+  - https://www.youtube.com/watch?v=waFJcar3cwM (legacy/old)
   - https://forum.unity.com/threads/how-to-oculus-quest-hand-tracking-pointerpose-pinch.1170538/
   - https://www.youtube.com/watch?v=BYS2NN1bWS4
   - https://developer.oculus.com/documentation/unity/unity-isdk-ray-interaction/
