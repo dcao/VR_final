@@ -1,24 +1,55 @@
 using System;
 using UnityEngine;
+using Meta.WitAi.Json;
+using Meta.WitAi.Data.Entities;
 
-public class OrderItem : MonoBehaviour
+namespace Meta.WitAi.Composer.Samples
 {
-  
-    public void Order(string value)
+    public class OrderItem : MonoBehaviour
     {
+        [SerializeField] private string entityID = "food";
+        public void OrderFood(ComposerSessionData sessionData)
+        {
+            // Check context map
+            if (sessionData.contextMap == null || sessionData.contextMap.Data == null)
+            {
+                VLog.E("Order Item Action Failed - No Context Map");
+                return;
+            }
+            if (!sessionData.contextMap.Data.HasChild(entityID))
+            {
+                VLog.E($"Order Item Action Failed - Context map does not contain {entityID}");
+                return;
+            }
 
-        string itemString = value;
+            // Get color name from context map
+            WitResponseArray foodArray = sessionData.contextMap.Data[entityID].AsArray;
 
-        Debug.Log(value);
-         if (string.IsNullOrEmpty(itemString)) return;
+            for(int i = 0; i < foodArray?.Count; i++) {
+                WitEntityData foodEntity = foodArray[i].AsWitEntity();
+                GetFood(foodEntity);
+            }
+        }
 
+        private void GetFood(WitEntityData foodEntity)
+        {
+            string foodName = foodEntity?.value;
+            if (string.IsNullOrEmpty(foodName))
+            {
+                VLog.E($"Order Item Action Failed - No {entityID} value found");
+            }
 
-         foreach (Transform child in transform) // iterate through all children of the gameObject.
-         {
-             if (child.name.IndexOf(itemString, StringComparison.OrdinalIgnoreCase) != -1) // if the name exists
-             {
-                 child.gameObject.SetActive(true);
-             }
-         }
+            Debug.Log(foodName);
+
+            foreach (Transform child in transform) // iterate through all children of the gameObject.
+            {
+                if (child.name.IndexOf(foodName, StringComparison.OrdinalIgnoreCase) != -1) // if the name exists
+                {
+                    // found matching object
+                    child.gameObject.SetActive(true);
+                }
+            }
+
+        }
     }
 }

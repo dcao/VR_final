@@ -18,9 +18,14 @@ public class WitActivation : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            Debug.Log("*** Pressed Space bar ***");
-            ActivateWit();
+            ActivateSpeaking();
         }
+    }
+
+    public void ActivateSpeaking() {
+        
+        Debug.Log("Speak:");
+        ActivateWit();
     }
 
     /// <summary>
