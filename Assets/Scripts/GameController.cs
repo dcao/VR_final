@@ -61,10 +61,10 @@ public class GameController : MonoBehaviour
     public void Reinitialize() {
         // StopAllCoroutines();
 
-        // foreach (GameObject c in customers) {
-        //     Destroy(c);
-        // }
-        // customers.Clear();
+        foreach (GameObject c in customers) {
+            Destroy(c);
+        }
+        customers = new List<GameObject>();
         // wit.Deactivate();
 
         consoleCtrl.AddLine("Initializing scenario");
