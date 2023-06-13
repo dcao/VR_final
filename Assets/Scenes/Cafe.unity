@@ -3162,7 +3162,7 @@ MonoBehaviour:
     onRecognized:
       m_PersistentCalls:
         m_Calls: []
-  threshold: 0.075
+  threshold: 0.05
   debugMode: 1
 --- !u!1 &1496432157
 GameObject:

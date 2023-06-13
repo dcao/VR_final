@@ -195,9 +195,6 @@ public class GameController : MonoBehaviour
 
         // Check gestures.
         Gesture rightGesture = rightGD.Recognize();
-        if (rightGesture.name != prevGesture) {
-            consoleCtrl.AddLine(rightGesture.name);
-        }
 
         // Perform raycast
         RaycastHit hit;
