@@ -39,6 +39,7 @@ public class GameController : MonoBehaviour
     WitActivation wit;
     ConsoleController consoleCtrl;
     string prevGesture = "";
+    Quaternion prevRotation;
 
     List<GameObject> customers;
     public string goalFood;
@@ -181,17 +182,17 @@ public class GameController : MonoBehaviour
 
         // Next, do manip test
         RaycastHit hit;
-        if (Physics.Raycast(rRay, out hit, maxDistance)) {
-            if (hit.collider.gameObject.GetComponent<Rigidbody>() != null && rightGesture.name == "fist_R") {
-                if (selected == null) {
-                    selected = hit.collider.gameObject;
-                    selected.GetComponent<Rigidbody>().isKinematic = true;
-                    hit.collider.gameObject.transform.position = rRay.GetPoint(focusDistance);
-
-                    selected.transform.rotation = Quaternion.FromToRotation(selected.transform.up, -rRay.direction);
-                } else {
-                    selected.transform.position = rRay.GetPoint(focusDistance);
-                }
+        if (Physics.Raycast(rRay, out hit, maxDistance) && hit.collider.gameObject.GetComponent<Rigidbody>() != null && rightGesture.name == "fist_R") {
+            if (selected == null) {
+                selected = hit.collider.gameObject;
+                // selected.GetComponent<Rigidbody>().isKinematic = true;
+                hit.collider.gameObject.transform.position = rRay.GetPoint(focusDistance);
+                selected.transform.rotation = Quaternion.FromToRotation(Vector3.up, -rRay.direction);
+                prevRotation = rightGD.skeleton.transform.rotation;
+            } else {
+                selected.transform.position = rRay.GetPoint(focusDistance);
+                Quaternion delta = rightGD.skeleton.transform.rotation * Quaternion.Inverse(prevRotation);
+                selected.transform.rotation = Quaternion.FromToRotation(Vector3.up, delta * -rRay.direction);
             }
 
             // selected.GetComponent<Highlight>()?.ToggleHighlight(true);
@@ -210,7 +211,7 @@ public class GameController : MonoBehaviour
             // }
         } else {
             if (selected != null) {
-                selected.GetComponent<Rigidbody>().isKinematic = false;
+                // selected.GetComponent<Rigidbody>().isKinematic = false;
             }
 
             selected = null;
