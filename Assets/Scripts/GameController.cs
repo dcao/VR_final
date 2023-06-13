@@ -53,6 +53,7 @@ public class GameController : MonoBehaviour
         wit = voiceExperience.GetComponent<WitActivation>();
         consoleCtrl = console.GetComponent<ConsoleController>();
         customers = new List<GameObject>();
+        rightGD = gdObjectR.GetComponent<GestureDetector>();
 
         Reinitialize();
     }
@@ -185,28 +186,28 @@ public class GameController : MonoBehaviour
     void teleport() {
         if (!useVR) {return;}
 
+        // Check gestures.
+        Gesture rightGesture = rightGD.Recognize();
+        if (rightGesture.name != prevGesture) {
+            consoleCtrl.AddLine(rightGesture.name);
+        }
+
         // Perform raycast
         RaycastHit hit;
         if (Physics.Raycast(rRay, out hit, maxDistance))
         {
-            // Check gestures.
-            Gesture rightGesture = rightGD.Recognize();
-            consoleCtrl.AddLine(rightGesture.name);
-            if (rightGesture.name == prevGesture) { return; }
-
-
-            if (rightGesture.name == "fist_R") {
-                chess.transform.position = new Vector3(hit.point.x, hit.point.y, hit.point.z);
+            if (rightGesture.name == "thumb_R") {
+                chess.transform.position = new Vector3(hit.point.x, 1.5f, hit.point.z);
                 chess.transform.rotation = Quaternion.identity;
                 chess.SetActive(true);
-            } else if (rightGesture.name == "" && prevGesture == "fist_R") {
+            } else if (rightGesture.name != "thumb_R" && prevGesture == "thumb_R") {
                 vrCam.transform.position = new Vector3(hit.point.x, transform.position.y, hit.point.z);
                 // hide chess indicator after transform
                 chess.SetActive(false);
             }
 
-            prevGesture = string.Copy(rightGesture.name);
         }
+        prevGesture = string.Copy(rightGesture.name);
         return;
     }
 }

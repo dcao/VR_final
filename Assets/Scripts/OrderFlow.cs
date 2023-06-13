@@ -36,8 +36,8 @@ namespace Meta.WitAi.Composer.Samples
         }
 
         // Called whenever a response is returned.
-        public void OnResponse(WitResponseNode response) {
-            consoleCtrl.AddLineCharwise("<b>Cashier</b>: " + response, cps);
+        public void OnResponse(ComposerSessionData sessionData) {
+            consoleCtrl.AddLineCharwise("<b>Cashier</b>: " + sessionData.responseData, cps);
         }
 
         public void OnEnd(ComposerSessionData sessionData) {
