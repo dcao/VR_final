@@ -22,9 +22,9 @@ public class GameController : MonoBehaviour
 
     // Consts
     public const int customerCount = 4;
-    public const float waitPerCustomer = 1.5f;
+    public float waitPerCustomer = 1.5f;
     public readonly Vector3 xfOffset = new Vector3(-2.0f, 0.0f, 0.0f);
-    public const float moveTime = 1.5f;
+    public float moveTime = 1.5f;
     private const float maxDistance = 10.0f;
 
     // State
@@ -32,8 +32,10 @@ public class GameController : MonoBehaviour
     GestureDetector rightGD;
     WitActivation wit;
     ConsoleController consoleCtrl;
-    List<GameObject> customers;
     string prevGesture = "";
+
+    List<GameObject> customers;
+    public string goalFood;
 
     // private:
     private GameObject chess;
@@ -59,15 +61,26 @@ public class GameController : MonoBehaviour
     }
 
     public void Reinitialize() {
-        // StopAllCoroutines();
+        StopAllCoroutines();
 
         foreach (GameObject c in customers) {
             Destroy(c);
         }
         customers = new List<GameObject>();
-        // wit.Deactivate();
+        if (wit != null) {
+            wit.Deactivate();
+        }
 
-        consoleCtrl.AddLine("Initializing scenario");
+        int r = Random.Range(0, 2);
+        if (r == 0) {
+            goalFood = "Pizza";
+        } else if (r == 1) {
+            goalFood = "Cheeseburger";
+        } else {
+            goalFood = "Coffee";
+        }
+
+        consoleCtrl.AddLine("Initializing scenario. Goal food: <b>" + goalFood + "</b>");
 
         // First, set the VR camera's transform to this current transform.
         vrCam.transform.position = transform.position;
@@ -83,6 +96,14 @@ public class GameController : MonoBehaviour
 
         // Begin the line movement procedure
         StartCoroutine(LineMovement());
+    }
+
+    public void SetWait(float wait) {
+        waitPerCustomer = wait;
+    }
+
+    public void SetMove(float move) {
+        moveTime = move;
     }
 
     IEnumerator LineMovement() {

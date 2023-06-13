@@ -84,6 +84,14 @@ namespace Meta.WitAi.Composer.Samples
                 {
                     // found matching object
                     child.gameObject.SetActive(true);
+
+                    string target = transform.parent.gameObject.GetComponent<GameController>().goalFood;
+
+                    if (child.name == target) {
+                        consoleCtrl.AddLineCharwise("<color=green>Success!</color> Hit Restart to try again.", cps);
+                    } else {
+                        consoleCtrl.AddLineCharwise("<color=purple>Try again!</color> You ordered a " + child.name + " instead of a " + target, cps);
+                    }
                 }
             }
         }

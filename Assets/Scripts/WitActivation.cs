@@ -28,7 +28,7 @@ public class WitActivation : MonoBehaviour
     }
 
     public void Deactivate() {
-        _voiceExperience.DeactivateAndAbortRequest();
+        _voiceExperience.Deactivate();
     }
 
     /// <summary>
