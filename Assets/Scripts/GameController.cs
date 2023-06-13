@@ -31,7 +31,7 @@ public class GameController : MonoBehaviour
     public readonly Vector3 xfOffset = new Vector3(-2.0f, 0.0f, 0.0f);
     public float moveTime = 1.5f;
     private const float maxDistance = 10.0f;
-    private const float focusDistance = 1.0f;
+    private const float focusDistance = 0.25f;
 
     // State
     GestureDetector rightGD;
@@ -45,6 +45,7 @@ public class GameController : MonoBehaviour
 
     // private:
     private GameObject chess;
+    private GameObject selected;
     private bool useVR;
     private Ray rRay;
     private Ray lRay;
@@ -54,7 +55,6 @@ public class GameController : MonoBehaviour
     {
         useVR = XRSettings.isDeviceActive;
         Debug.Log(string.Format("VR device (headset + controller) is detected: {0}", useVR));
-        rRayRenderer = GetComponent<LineRenderer>();
 
         chess = Instantiate(chessPrefab);
         chess.SetActive(false);  // invisible by default
@@ -164,9 +164,11 @@ public class GameController : MonoBehaviour
         step = 5.0f * Time.deltaTime;
 
         updateRightRay();
-        updateLeftRay();
+        // updateLeftRay();
+
         moveAround();
         teleport();
+
         manipulateObjectVR();
     }
 
@@ -175,16 +177,21 @@ public class GameController : MonoBehaviour
         if (!useVR) {return;}
 
         // Check gestures.
-        Gesture leftGesture = leftGD.Recognize();
+        Gesture rightGesture = rightGD.Recognize();
 
         // Next, do manip test
         RaycastHit hit;
         if (Physics.Raycast(rRay, out hit, maxDistance)) {
-            // consoleCtrl.AddLine("gesture: " + leftGesture.name);
-            // consoleCtrl.AddLine("hit: " + hit.collider.gameObject.name);
+            if (hit.collider.gameObject.GetComponent<Rigidbody>() != null && rightGesture.name == "fist_R") {
+                if (selected == null) {
+                    selected = hit.collider.gameObject;
+                    selected.GetComponent<Rigidbody>().isKinematic = true;
+                    hit.collider.gameObject.transform.position = rRay.GetPoint(focusDistance);
 
-            if (hit.collider.gameObject.GetComponent<Rigidbody>() != null && leftGesture.name == "tipUp_L") {
-                hit.collider.gameObject.transform.position = lRay.GetPoint(focusDistance);
+                    selected.transform.rotation = Quaternion.FromToRotation(selected.transform.up, -rRay.direction);
+                } else {
+                    selected.transform.position = rRay.GetPoint(focusDistance);
+                }
             }
 
             // selected.GetComponent<Highlight>()?.ToggleHighlight(true);
@@ -202,12 +209,11 @@ public class GameController : MonoBehaviour
             //     hit.transform.localScale = new Vector3(hit.transform.localScale.x * scaleFactor, hit.transform.localScale.y * scaleFactor, hit.transform.localScale.z * scaleFactor);
             // }
         } else {
-            // if (selected != null) {
-            //     // restore original materials
-            //     // selected.GetComponent<Highlight>()?.ToggleHighlight(false);
-            // }
+            if (selected != null) {
+                selected.GetComponent<Rigidbody>().isKinematic = false;
+            }
 
-            // selected = null;
+            selected = null;
         }
     }
 
@@ -248,7 +254,6 @@ public class GameController : MonoBehaviour
             // Vector3 rayDirection = controllerRotation * li.Forward;
 
             // Update the global ray's position and direction
-            // rRay.origin = eyeCamera.transform.position + new Vector3(0.25f, -0.25f, 0.25f);
             lRay.origin = controllerPosition;
             lRay.direction = li.Forward;
         }
