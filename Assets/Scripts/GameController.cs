@@ -43,13 +43,19 @@ public class GameController : MonoBehaviour
         chess = Instantiate(chessPrefab);
         chess.SetActive(false);  // invisible by default
 
-        // First, set the VR camera's transform to this current transform.
-        vrCam.transform.position = transform.position;
-        vrCam.transform.rotation = transform.rotation;
-
         wit = voiceExperience.GetComponent<WitActivation>();
         consoleCtrl = console.GetComponent<ConsoleController>();
         customers = new List<GameObject>();
+
+        Reinitialize();
+    }
+
+    void Reinitialize() {
+        consoleCtrl.AddLine("<color=gray>Initializing scenario</color>");
+
+        // First, set the VR camera's transform to this current transform.
+        vrCam.transform.position = transform.position;
+        vrCam.transform.rotation = transform.rotation;
 
         // Spawn the other customers
         for (int i = 1; i <= customerCount - 1; i++) {
@@ -62,17 +68,6 @@ public class GameController : MonoBehaviour
         // Begin the line movement procedure
         StartCoroutine(LineMovement());
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        step = 5.0f * Time.deltaTime;
-
-        updateRightRay();
-        moveAround();
-        teleport();
-    }
-
 
     IEnumerator LineMovement() {
         for (int i = 0; i < customerCount - 1; i++) {
@@ -117,6 +112,15 @@ public class GameController : MonoBehaviour
        // TODO: do we want to do state machine style or just coroutine function call?
     }
 
+    // Update is called once per frame
+    void Update()
+    {
+        step = 5.0f * Time.deltaTime;
+
+        updateRightRay();
+        moveAround();
+        teleport();
+    }
 
     // helper function: shoot a Ray from right-hand (Secondary) controller
     // it updates rControllerRay
@@ -142,7 +146,6 @@ public class GameController : MonoBehaviour
         rRayRenderer.SetPosition(0, rRay.origin);
         rRayRenderer.SetPosition(1, rRay.origin + rRay.direction * maxDistance);
     }
-
 
     void moveAround() {
         Vector3 forward = vrCam.transform.forward;
@@ -185,13 +188,13 @@ public class GameController : MonoBehaviour
             if (true/* Mathf.Abs(hit.point.y) < 1e-2 */) { // close to ground, can teleport
                 // draw a chess to indicate teleport destination
                 if (OVRInput.GetDown(OVRInput.Button.Four)) {
-                    chess.transform.position = new Vector3(hit.point.x, chessY, hit.point.z);
+                    chess.transform.position = new Vector3(hit.point.x, 0.0f, hit.point.z);
                     chess.transform.rotation = Quaternion.identity;
                     chess.SetActive(true);
                 }
                 // teleport if user release left-hand Y button
                 if (OVRInput.GetUp(OVRInput.Button.Four)) {
-                    vrCam.transform.position = new Vector3(hit.point.x, eyeY, hit.point.z);
+                    vrCam.transform.position = new Vector3(hit.point.x, transform.position.y, hit.point.z);
                     // hide chess indicator after transform
                     chess.SetActive(false);
                 }
