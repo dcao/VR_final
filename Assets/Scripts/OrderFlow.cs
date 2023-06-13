@@ -5,9 +5,35 @@ using Meta.WitAi.Data.Entities;
 
 namespace Meta.WitAi.Composer.Samples
 {
-    public class OrderItem : MonoBehaviour
+    public class OrderFlow : MonoBehaviour
     {
-        [SerializeField] private string entityID = "food";
+        public GameObject console;
+
+        [SerializeField] string entityID = "food";
+        ConsoleController consoleCtrl;
+
+        void Awake() {
+            consoleCtrl = console.GetComponent<ConsoleController>();
+        }
+
+        // Called whenever the user speaks
+        public void OnSpeak(string line) {
+            consoleCtrl.AddLineCharwise("<color=green>" + line + "</color>", 80);
+        }
+
+        // Called whenever a response is returned.
+        public void OnResponse(ComposerSessionData sessionData) {
+            string error = sessionData.responseData.error;
+            string response = sessionData.responseData.responsePhrase;
+
+            if (error != "") {
+                // TODO: Terminate early?
+                consoleCtrl.AddLine("<color=red>Error: </color>" + error);
+            } else {
+                consoleCtrl.AddLineCharwise("<b>Cashier</b>: " + response, 80);
+            }
+        }
+
         public void OrderFood(ComposerSessionData sessionData)
         {
             // Check context map

@@ -2,18 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// Our game is a state machine that progresses in four stages:
-enum GameState {
-    // First, you're standing in line.
-    InLine,
-    // Next, you're prompted to speak into the mic to order something.
-    Ordering,
-    // You're asked for any adjustments
-    Adjustments,
-    // Is that ok? If yes, we're good. Otherwise, go back to Ordering.
-    Confirm,
-}
-
 // The core game controller. In charge of maintaining game state.
 public class GameController : MonoBehaviour
 {
@@ -22,6 +10,7 @@ public class GameController : MonoBehaviour
     public Camera vrCam;
     public GameObject console;
     public GameObject customerPrefab;
+    public GameObject voiceExperience;
 
     // Consts
     public const int customerCount = 4;
@@ -30,16 +19,17 @@ public class GameController : MonoBehaviour
     public const float moveTime = 1.5f;
 
     // State
+    WitActivation wit;
     ConsoleController consoleCtrl;
     List<GameObject> customers;
 
-    // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         // First, set the VR camera's transform to this current transform.
         vrCam.transform.position = transform.position;
         vrCam.transform.rotation = transform.rotation;
 
+        wit = voiceExperience.GetComponent<WitActivation>();
         consoleCtrl = console.GetComponent<ConsoleController>();
         customers = new List<GameObject>();
 
@@ -72,6 +62,12 @@ public class GameController : MonoBehaviour
                 yield return StartCoroutine(LerpPos(customers[j], xfOffset, moveTime));
             }
         }
+
+        // Once we've gotten to this point, start the microphone procedure!
+        consoleCtrl.AddLineCharwise("Your turn to order! Speak your order into the mic. <color=green>Mic is enabled.</color>", 200);
+        wit.ActivateSpeaking();
+
+        // Because of consequences with how we coded this, all order flow interactiosn are handled by OrderFlow.
     }
 
     IEnumerator LerpPos(GameObject obj, Vector3 delta, float time)
