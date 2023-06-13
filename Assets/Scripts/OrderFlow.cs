@@ -104,7 +104,7 @@ namespace Meta.WitAi.Composer.Samples
                 if (child.name.IndexOf(foodName, StringComparison.OrdinalIgnoreCase) != -1) // if the name exists
                 {
                     // found matching object
-                    child.gameObject.SetActive(true);
+                    // child.gameObject.SetActive(true);
 
                     string target = transform.parent.gameObject.GetComponent<GameController>().goalFood;
                     if (child.name == target) {
