@@ -8,8 +8,8 @@
 
 ## TODOs
 
-- [ ] Voice integration
-- [ ] Gameplay loop
+- [x] Voice integration
+- [x] Gameplay loop
 - [ ] Locomotion
 - [ ] UI
 - [ ] Grabbable menus
@@ -25,3 +25,9 @@
 - voice stuff
   - https://developer.oculus.com/documentation/unity/voice-sdk-transcription/
   - https://developer.oculus.com/documentation/unity/voice-sdk-visual-feedback/
+
+
+## Running Notes
+
+- Download and install Oculus Integration SDK v51.
+- Download and install https://github.com/wit-ai/wit-unity/releases/tag/v51.0.0

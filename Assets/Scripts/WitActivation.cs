@@ -23,8 +23,6 @@ public class WitActivation : MonoBehaviour
     }
 
     public void ActivateSpeaking() {
-        
-        Debug.Log("Speak:");
         ActivateWit();
     }
 
