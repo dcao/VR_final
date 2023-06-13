@@ -18,7 +18,7 @@ namespace Meta.WitAi.Composer.Samples
 
         // Called whenever the user speaks
         public void OnSpeak(string line) {
-            consoleCtrl.AddLineCharwise("<color=green>" + line + "</color>", 80);
+            consoleCtrl.AddLineCharwise("User: <color=green>" + line + "</color>", 80);
         }
 
         // Called whenever a response is returned.

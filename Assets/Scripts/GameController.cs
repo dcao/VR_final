@@ -9,7 +9,7 @@ public class GameController : MonoBehaviour
 {
 
     // Params
-    public Camera vrCam;
+    public GameObject vrCam;
     public GameObject console;
     public GameObject customerPrefab;
     public GameObject voiceExperience;
@@ -51,7 +51,8 @@ public class GameController : MonoBehaviour
     }
 
     void Reinitialize() {
-        consoleCtrl.AddLine("<color=gray>Initializing scenario</color>");
+        StopAllCoroutines();
+        consoleCtrl.AddLine("Initializing scenario");
 
         // First, set the VR camera's transform to this current transform.
         vrCam.transform.position = transform.position;
@@ -117,7 +118,7 @@ public class GameController : MonoBehaviour
     {
         step = 5.0f * Time.deltaTime;
 
-        updateRightRay();
+        // updateRightRay();
         moveAround();
         teleport();
     }

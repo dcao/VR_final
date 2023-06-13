@@ -26,6 +26,10 @@ public class ConsoleController : MonoBehaviour
 
     // Add a new line to the console, but add it character-by-character, to emulate dialogue.
     public IEnumerator BuildLine(string line, float cps) {
+        if (text == null) {
+            Awake();
+        }
+
         string prev = text.text;
         string built = "";
         bool tagOpen = false;
