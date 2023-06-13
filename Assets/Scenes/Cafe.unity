@@ -2062,8 +2062,8 @@ MonoBehaviour:
   witRuntimeConfiguration:
     witConfiguration: {fileID: 11400000, guid: fd779be03994e430d91d7c2a9c4de712, type: 2}
     minKeepAliveVolume: 0.0005
-    minKeepAliveTimeInSeconds: 2
-    minTranscriptionKeepAliveTimeInSeconds: 1
+    minKeepAliveTimeInSeconds: 6.03
+    minTranscriptionKeepAliveTimeInSeconds: 5.05
     maxRecordingTime: 20
     soundWakeThreshold: 0.0005
     sampleLengthInMs: 10
