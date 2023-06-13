@@ -12,7 +12,8 @@ namespace Meta.WitAi.Composer.Samples
         public GameObject status;
         float cps = 80.0f;
 
-        [SerializeField] string entityID = "food";
+        private string inputID = "foods";
+        private string entityID = "food";
         TextMeshProUGUI statusText;
         ConsoleController consoleCtrl;
 
@@ -59,12 +60,14 @@ namespace Meta.WitAi.Composer.Samples
                 return;
             }
 
-            // Get color name from context map
-            WitResponseArray foodArray = sessionData.contextMap.Data[entityID].AsArray;
+            WitResponseArray foodArrayArray = sessionData.contextMap.Data[inputID].AsArray;
 
-            for(int i = 0; i < foodArray?.Count; i++) {
-                WitEntityData foodEntity = foodArray[i].AsWitEntity();
-                GetFood(foodEntity);
+            for(int i = 0; i < foodArrayArray?.Count; i++) {
+                var foodArray = foodArrayArray[i];
+                for(int j = 0; j < foodArray?.Count; j++) {
+                    WitEntityData foodEntity = foodArray[j].AsWitEntity();
+                    GetFood(foodEntity);
+                }
             }
         }
 
