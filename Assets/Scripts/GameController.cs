@@ -60,6 +60,13 @@ public class GameController : MonoBehaviour
 
     public void Reinitialize() {
         StopAllCoroutines();
+
+        foreach (GameObject c in customers) {
+            Destroy(c);
+        }
+        customers.Clear();
+        wit.Deactivate();
+
         consoleCtrl.AddLine("Initializing scenario");
 
         // First, set the VR camera's transform to this current transform.

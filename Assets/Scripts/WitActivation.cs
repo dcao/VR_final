@@ -23,7 +23,12 @@ public class WitActivation : MonoBehaviour
     }
 
     public void ActivateSpeaking() {
+        Debug.Log("ok");
         ActivateWit();
+    }
+
+    public void Deactivate() {
+        _voiceExperience.DeactivateAndAbortRequest();
     }
 
     /// <summary>
