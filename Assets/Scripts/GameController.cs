@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;   // XR support
 using UnityEngine.Assertions;
+using Oculus.Interaction;
 
 // The core game controller. In charge of maintaining game state.
 public class GameController : MonoBehaviour
@@ -14,19 +15,25 @@ public class GameController : MonoBehaviour
     public GameObject customerPrefab;
     public GameObject voiceExperience;
     public GameObject chessPrefab;    // To indicate the teleport destination
-    public LineRenderer rRayRenderer;
+
+    public GameObject rayInteractorR;
+    public GameObject gdObjectR;
+    public GameObject rayInteractorL;
 
     // Consts
     public const int customerCount = 4;
-    public const float waitPerCustomer = 10.0f;
+    public const float waitPerCustomer = 1.5f;
     public readonly Vector3 xfOffset = new Vector3(-2.0f, 0.0f, 0.0f);
     public const float moveTime = 1.5f;
     private const float maxDistance = 10.0f;
 
     // State
+    LineRenderer rRayRenderer;
+    GestureDetector rightGD;
     WitActivation wit;
     ConsoleController consoleCtrl;
     List<GameObject> customers;
+    string prevGesture = "";
 
     // private:
     private GameObject chess;
@@ -34,7 +41,7 @@ public class GameController : MonoBehaviour
     private Ray rRay;
     private float step;  // sensitivity of movement
 
-    void Awake()
+    void Start()
     {
         useVR = XRSettings.isDeviceActive;
         Debug.Log(string.Format("VR device (headset + controller) is detected: {0}", useVR));
@@ -118,7 +125,7 @@ public class GameController : MonoBehaviour
     {
         step = 5.0f * Time.deltaTime;
 
-        // updateRightRay();
+        updateRightRay();
         moveAround();
         teleport();
     }
@@ -129,16 +136,17 @@ public class GameController : MonoBehaviour
     void updateRightRay() {
         if (useVR) {
             // Get controller position and rotation
-            Vector3 controllerPosition = OVRInput.GetLocalControllerPosition(OVRInput.Controller.RTouch);
-            Quaternion controllerRotation = OVRInput.GetLocalControllerRotation(OVRInput.Controller.RTouch);
+            RayInteractor ri = rayInteractorR.GetComponent<RayInteractor>();
+            Vector3 controllerPosition = ri.Origin;
+            Quaternion controllerRotation = ri.Rotation;
 
             // Calculate ray direction
-            Vector3 rayDirection = controllerRotation * Vector3.forward;
+            Vector3 rayDirection = controllerRotation * ri.Forward;
 
             // Update the global ray's position and direction
             // rRay.origin = eyeCamera.transform.position + new Vector3(0.25f, -0.25f, 0.25f);
-            rRay.origin = vrCam.transform.position + controllerPosition;
-            rRay.direction = rayDirection;
+            rRay.origin = controllerPosition;
+            rRay.direction = ri.Forward;
         } else {
             rRay = Camera.main.ScreenPointToRay(Input.mousePosition);
         }
@@ -181,30 +189,24 @@ public class GameController : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(rRay, out hit, maxDistance))
         {
-            // Debug log information about the hit object
-            Debug.Log("Hit object: " + hit.collider.gameObject.name);
-            Debug.Log("Hit point: " + hit.point);
-            Debug.Log("Hit normal: " + hit.normal);
+            // Check gestures.
+            Gesture rightGesture = rightGD.Recognize();
+            consoleCtrl.AddLine(rightGesture.name);
+            if (rightGesture.name == prevGesture) { return; }
 
-            if (true/* Mathf.Abs(hit.point.y) < 1e-2 */) { // close to ground, can teleport
-                // draw a chess to indicate teleport destination
-                if (OVRInput.GetDown(OVRInput.Button.Four)) {
-                    chess.transform.position = new Vector3(hit.point.x, 0.0f, hit.point.z);
-                    chess.transform.rotation = Quaternion.identity;
-                    chess.SetActive(true);
-                }
-                // teleport if user release left-hand Y button
-                if (OVRInput.GetUp(OVRInput.Button.Four)) {
-                    vrCam.transform.position = new Vector3(hit.point.x, transform.position.y, hit.point.z);
-                    // hide chess indicator after transform
-                    chess.SetActive(false);
-                }
+
+            if (rightGesture.name == "fist_R") {
+                chess.transform.position = new Vector3(hit.point.x, hit.point.y, hit.point.z);
+                chess.transform.rotation = Quaternion.identity;
+                chess.SetActive(true);
+            } else if (rightGesture.name == "" && prevGesture == "fist_R") {
+                vrCam.transform.position = new Vector3(hit.point.x, transform.position.y, hit.point.z);
+                // hide chess indicator after transform
+                chess.SetActive(false);
             }
+
+            prevGesture = string.Copy(rightGesture.name);
         }
         return;
     }
-
-
-    // Begin the main interaction loop
-    void BeginInteraction() {}
 }

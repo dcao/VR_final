@@ -2,42 +2,48 @@ using System;
 using UnityEngine;
 using Meta.WitAi.Json;
 using Meta.WitAi.Data.Entities;
+using TMPro;
 
 namespace Meta.WitAi.Composer.Samples
 {
     public class OrderFlow : MonoBehaviour
     {
         public GameObject console;
+        public GameObject status;
         float cps = 80.0f;
 
         [SerializeField] string entityID = "food";
+        TextMeshProUGUI statusText;
         ConsoleController consoleCtrl;
 
         void Awake() {
             consoleCtrl = console.GetComponent<ConsoleController>();
+            statusText = status.GetComponent<TextMeshProUGUI>();
         }
 
         public void SetCps(float val) {
             cps = val;
         }
 
+        public void OnError(string a, string b) {
+            consoleCtrl.AddLine("<color=red>Error: </color>" + a + ": " + b);
+            // TODO: Terminate early?
+        }
+
         // Called whenever the user speaks
         public void OnSpeak(string line) {
-            consoleCtrl.AddLineCharwise("User: <color=green>" + line + "</color>", cps);
+            consoleCtrl.AddLine("User: <color=green>" + line + "</color>");
         }
 
         // Called whenever a response is returned.
-        public void OnResponse(ComposerSessionData sessionData) {
-            string error = sessionData.responseData.error;
-            string response = sessionData.responseData.responsePhrase;
-
-            if (error != "") {
-                // TODO: Terminate early?
-                consoleCtrl.AddLine("<color=red>Error: </color>" + error);
-            } else {
-                consoleCtrl.AddLineCharwise("<b>Cashier</b>: " + response, cps);
-            }
+        public void OnResponse(WitResponseNode response) {
+            consoleCtrl.AddLineCharwise("<b>Cashier</b>: " + response, cps);
         }
+
+        public void OnEnd(ComposerSessionData sessionData) {
+            consoleCtrl.AddLine("Conversation complete.");
+        }
+
 
         public void OrderFood(ComposerSessionData sessionData)
         {
@@ -80,7 +86,6 @@ namespace Meta.WitAi.Composer.Samples
                     child.gameObject.SetActive(true);
                 }
             }
-
         }
     }
 }
