@@ -1,5 +1,7 @@
 # Ordering Simulator 2023
 
+by **David Cao, Jeremy Lei, and Thomas Wang**
+
 ## Assets Attribution
 
 - **Model**: "Anime Cafe" by [fangzhangmnm](https://sketchfab.com/fangzhangmnm)
@@ -8,14 +10,6 @@
 
 All of our features were implemented using the Oculus Integration SDKs and the Wit.ai Voice SDK
 integration package.
-
-## TODOs
-
-- [x] Voice integration
-- [x] Gameplay loop
-- [ ] Locomotion
-- [ ] UI
-- [ ] Grabbable menus
 
 ## Resources used
 

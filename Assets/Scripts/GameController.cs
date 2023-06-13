@@ -37,7 +37,7 @@ public class GameController : MonoBehaviour
     public readonly Vector3 xfOffset = new Vector3(-2.0f, 0.0f, 0.0f);
     public float moveTime = 1.5f;
     private const float maxDistance = 10.0f;
-    private const float focusDistance = 0.25f;
+    private const float focusDistance = 0.5f;
 
     GestureDetector rightGD;
     GestureDetector leftGD;
