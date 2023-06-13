@@ -21,22 +21,34 @@ namespace Meta.WitAi.Composer.Samples
             cps = val;
         }
 
+        public void OnError(string a, string b) {
+            consoleCtrl.AddLine("<color=red>Error: </color>" + a + ": " + b);
+            // TODO: Terminate early?
+        }
+
         // Called whenever the user speaks
         public void OnSpeak(string line) {
-            consoleCtrl.AddLineCharwise("User: <color=green>" + line + "</color>", cps);
+            consoleCtrl.AddLine("User: <color=green>" + line + "</color>");
         }
 
         // Called whenever a response is returned.
         public void OnResponse(ComposerSessionData sessionData) {
-            string error = sessionData.responseData.error;
-            string response = sessionData.responseData.responsePhrase;
-
-            if (error != "") {
-                // TODO: Terminate early?
-                consoleCtrl.AddLine("<color=red>Error: </color>" + error);
-            } else {
-                consoleCtrl.AddLineCharwise("<b>Cashier</b>: " + response, cps);
+            if (sessionData.contextMap == null || sessionData.contextMap.Data == null)
+            {
+                VLog.E("Order Item Action Failed - No Context Map");
+                return;
             }
+            if (!sessionData.contextMap.Data.HasChild(entityID))
+            {
+                VLog.E($"Order Item Action Failed - Context map does not contain {entityID}");
+                return;
+            }
+
+            consoleCtrl.AddLineCharwise("<b>Cashier</b>: "/* + sessionData*/, cps);
+        }
+
+        public void OnEnd(ComposerSessionData sessionData) {
+            consoleCtrl.AddLine("Conversation complete.");
         }
 
         public void OrderFood(ComposerSessionData sessionData)
