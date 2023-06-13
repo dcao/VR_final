@@ -16,9 +16,14 @@ public class GameController : MonoBehaviour
     public GameObject voiceExperience;
     public GameObject chessPrefab;    // To indicate the teleport destination
 
-    public GameObject rayInteractorR;
-    public GameObject gdObjectR;
     public GameObject rayInteractorL;
+    public GameObject rayInteractorR;
+
+    public GameObject gdObjectL;
+    public GameObject gdObjectR;
+
+    public LineRenderer rRayRenderer;
+    public LineRenderer lRayRenderer;
 
     // Consts
     public const int customerCount = 4;
@@ -26,10 +31,11 @@ public class GameController : MonoBehaviour
     public readonly Vector3 xfOffset = new Vector3(-2.0f, 0.0f, 0.0f);
     public float moveTime = 1.5f;
     private const float maxDistance = 10.0f;
+    private const float focusDistance = 1.0f;
 
     // State
-    LineRenderer rRayRenderer;
     GestureDetector rightGD;
+    GestureDetector leftGD;
     WitActivation wit;
     ConsoleController consoleCtrl;
     string prevGesture = "";
@@ -41,6 +47,7 @@ public class GameController : MonoBehaviour
     private GameObject chess;
     private bool useVR;
     private Ray rRay;
+    private Ray lRay;
     private float step;  // sensitivity of movement
 
     void Start()
@@ -55,7 +62,9 @@ public class GameController : MonoBehaviour
         wit = voiceExperience.GetComponent<WitActivation>();
         consoleCtrl = console.GetComponent<ConsoleController>();
         customers = new List<GameObject>();
+
         rightGD = gdObjectR.GetComponent<GestureDetector>();
+        leftGD = gdObjectL.GetComponent<GestureDetector>();
 
         Reinitialize();
     }
@@ -155,8 +164,51 @@ public class GameController : MonoBehaviour
         step = 5.0f * Time.deltaTime;
 
         updateRightRay();
+        updateLeftRay();
         moveAround();
         teleport();
+        manipulateObjectVR();
+    }
+
+    // Object manipulation!
+    void manipulateObjectVR() {
+        if (!useVR) {return;}
+
+        // Check gestures.
+        Gesture leftGesture = leftGD.Recognize();
+
+        // Next, do manip test
+        RaycastHit hit;
+        if (Physics.Raycast(rRay, out hit, maxDistance)) {
+            // consoleCtrl.AddLine("gesture: " + leftGesture.name);
+            // consoleCtrl.AddLine("hit: " + hit.collider.gameObject.name);
+
+            if (hit.collider.gameObject.GetComponent<Rigidbody>() != null && leftGesture.name == "tipUp_L") {
+                hit.collider.gameObject.transform.position = lRay.GetPoint(focusDistance);
+            }
+
+            // selected.GetComponent<Highlight>()?.ToggleHighlight(true);
+
+            // Rotation check
+            // if (OVRInput.Get(OVRInput.RawButton.RHandTrigger) && OVRInput.Get(OVRInput.RawButton.LHandTrigger)) {
+            //     hit.transform.Rotate(0, 0, 90.0f * Time.deltaTime);
+            // } else if (OVRInput.Get(OVRInput.RawButton.RHandTrigger)) {
+            //     // Scale up check
+            //     float scaleFactor = 1.0f + 0.5f * Time.deltaTime;
+            //     hit.transform.localScale = new Vector3(hit.transform.localScale.x * scaleFactor, hit.transform.localScale.y * scaleFactor, hit.transform.localScale.z * scaleFactor);
+            // } else if (OVRInput.Get(OVRInput.RawButton.LHandTrigger)) {
+            //     // Scale down check
+            //     float scaleFactor = 1.0f - 0.5f * Time.deltaTime;
+            //     hit.transform.localScale = new Vector3(hit.transform.localScale.x * scaleFactor, hit.transform.localScale.y * scaleFactor, hit.transform.localScale.z * scaleFactor);
+            // }
+        } else {
+            // if (selected != null) {
+            //     // restore original materials
+            //     // selected.GetComponent<Highlight>()?.ToggleHighlight(false);
+            // }
+
+            // selected = null;
+        }
     }
 
     // helper function: shoot a Ray from right-hand (Secondary) controller
@@ -167,10 +219,10 @@ public class GameController : MonoBehaviour
             // Get controller position and rotation
             RayInteractor ri = rayInteractorR.GetComponent<RayInteractor>();
             Vector3 controllerPosition = ri.Origin;
-            Quaternion controllerRotation = ri.Rotation;
+            // Quaternion controllerRotation = ri.Rotation;
 
             // Calculate ray direction
-            Vector3 rayDirection = controllerRotation * ri.Forward;
+            // Vector3 rayDirection = controllerRotation * ri.Forward;
 
             // Update the global ray's position and direction
             // rRay.origin = eyeCamera.transform.position + new Vector3(0.25f, -0.25f, 0.25f);
@@ -183,6 +235,27 @@ public class GameController : MonoBehaviour
         // Set the line renderer's positions to match the ray
         rRayRenderer.SetPosition(0, rRay.origin);
         rRayRenderer.SetPosition(1, rRay.origin + rRay.direction * maxDistance);
+    }
+
+    void updateLeftRay() {
+        if (useVR) {
+            // Get controller position and rotation
+            RayInteractor li = rayInteractorL.GetComponent<RayInteractor>();
+            Vector3 controllerPosition = li.Origin;
+            // Quaternion controllerRotation = li.Rotation;
+
+            // Calculate ray direction
+            // Vector3 rayDirection = controllerRotation * li.Forward;
+
+            // Update the global ray's position and direction
+            // rRay.origin = eyeCamera.transform.position + new Vector3(0.25f, -0.25f, 0.25f);
+            lRay.origin = controllerPosition;
+            lRay.direction = li.Forward;
+        }
+
+        // Set the line renderer's positions to match the ray
+        lRayRenderer.SetPosition(0, lRay.origin);
+        lRayRenderer.SetPosition(1, lRay.origin + lRay.direction * maxDistance);
     }
 
     void moveAround() {

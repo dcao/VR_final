@@ -62,16 +62,23 @@ namespace Meta.WitAi.Composer.Samples
 
             WitResponseArray foodArrayArray = sessionData.contextMap.Data[inputID].AsArray;
 
+            bool foundFood = false;
+
             for(int i = 0; i < foodArrayArray?.Count; i++) {
                 var foodArray = foodArrayArray[i];
                 for(int j = 0; j < foodArray?.Count; j++) {
                     WitEntityData foodEntity = foodArray[j].AsWitEntity();
-                    GetFood(foodEntity);
+                    foundFood = foundFood || GetFood(foodEntity);
                 }
+            }
+
+            if (!foundFood) {
+                string target = transform.parent.gameObject.GetComponent<GameController>().goalFood;
+                consoleCtrl.AddLineCharwise("<color=purple>Try again!</color> Your goal is " + target, cps);
             }
         }
 
-        private void GetFood(WitEntityData foodEntity)
+        private bool GetFood(WitEntityData foodEntity)
         {
             string foodName = foodEntity?.value;
             if (string.IsNullOrEmpty(foodName))
@@ -89,14 +96,14 @@ namespace Meta.WitAi.Composer.Samples
                     child.gameObject.SetActive(true);
 
                     string target = transform.parent.gameObject.GetComponent<GameController>().goalFood;
-
                     if (child.name == target) {
                         consoleCtrl.AddLineCharwise("<color=green>Success!</color> Hit Restart to try again.", cps);
-                    } else {
-                        consoleCtrl.AddLineCharwise("<color=purple>Try again!</color> You ordered a " + child.name + " instead of a " + target, cps);
+                        return true;
                     }
                 }
             }
+
+            return false;
         }
     }
 }
