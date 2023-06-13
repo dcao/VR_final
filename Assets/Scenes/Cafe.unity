@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028326, g: 0.22571333, b: 0.30692202, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028334, g: 0.22571337, b: 0.3069219, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -602,6 +602,21 @@ MonoBehaviour:
   gdObjectR: {fileID: 1478817444}
   rRayRenderer: {fileID: 121137651}
   lRayRenderer: {fileID: 1999799886}
+  Speaker:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 522214356}
+        m_TargetAssemblyTypeName: Meta.WitAi.TTS.Utilities.TTSSpeaker, Meta.WitAi.TTS
+        m_MethodName: Speak
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   waitPerCustomer: 1.5
   moveTime: 1.5
   goalFood: 
@@ -2586,12 +2601,6 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls: []
     OnClipLoadAbort:
-      m_PersistentCalls:
-        m_Calls: []
-    OnPlaybackQueueBegin:
-      m_PersistentCalls:
-        m_Calls: []
-    OnPlaybackQueueComplete:
       m_PersistentCalls:
         m_Calls: []
 --- !u!1 &559757002
@@ -6861,12 +6870,6 @@ MonoBehaviour:
     OnStreamReady:
       m_PersistentCalls:
         m_Calls: []
-    OnStreamClipUpdate:
-      m_PersistentCalls:
-        m_Calls: []
-    OnStreamComplete:
-      m_PersistentCalls:
-        m_Calls: []
     OnStreamCancel:
       m_PersistentCalls:
         m_Calls: []
@@ -6915,12 +6918,6 @@ MonoBehaviour:
       OnStreamReady:
         m_PersistentCalls:
           m_Calls: []
-      OnStreamClipUpdate:
-        m_PersistentCalls:
-          m_Calls: []
-      OnStreamComplete:
-        m_PersistentCalls:
-          m_Calls: []
       OnStreamCancel:
         m_PersistentCalls:
           m_Calls: []
@@ -6942,10 +6939,6 @@ MonoBehaviour:
           m_Calls: []
   RequestSettings:
     configuration: {fileID: 11400000, guid: fd779be03994e430d91d7c2a9c4de712, type: 2}
-    audioType: 0
-    audioStream: 1
-    audioStreamReadyDuration: 0.1
-    audioStreamChunkLength: 5
   _presetVoiceSettings:
   - settingsID: CAEL
     voice: Cael

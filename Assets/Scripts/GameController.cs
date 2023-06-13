@@ -4,6 +4,10 @@ using UnityEngine;
 using UnityEngine.XR;   // XR support
 using UnityEngine.Assertions;
 using Oculus.Interaction;
+using UnityEngine.Events;
+
+[System.Serializable]
+public class VoiceEvent : UnityEvent <string> {}
 
 // The core game controller. In charge of maintaining game state.
 public class GameController : MonoBehaviour
@@ -25,6 +29,8 @@ public class GameController : MonoBehaviour
     public LineRenderer rRayRenderer;
     public LineRenderer lRayRenderer;
 
+    public VoiceEvent Speaker;
+
     // Consts
     public const int customerCount = 4;
     public float waitPerCustomer = 1.5f;
@@ -33,7 +39,6 @@ public class GameController : MonoBehaviour
     private const float maxDistance = 10.0f;
     private const float focusDistance = 0.25f;
 
-    // State
     GestureDetector rightGD;
     GestureDetector leftGD;
     WitActivation wit;
@@ -134,6 +139,9 @@ public class GameController : MonoBehaviour
         }
 
         // Once we've gotten to this point, start the microphone procedure!
+        
+        Speaker.Invoke("Hello!");
+        yield return new WaitForSeconds(0.75f);
         consoleCtrl.AddLine("Your turn to order! Speak your order into the mic. <color=green>Mic is enabled.</color>");
         wit.ActivateSpeaking();
 
