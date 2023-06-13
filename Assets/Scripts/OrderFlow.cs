@@ -10,6 +10,7 @@ namespace Meta.WitAi.Composer.Samples
     {
         public GameObject console;
         public GameObject status;
+        public VoiceEvent Speaker;
         float cps = 80.0f;
 
         private string inputID = "foods";
@@ -64,11 +65,19 @@ namespace Meta.WitAi.Composer.Samples
 
             bool foundFood = false;
 
+            string message = "Here is your ";
+            int numFood = 0;
+
             for(int i = 0; i < foodArrayArray?.Count; i++) {
                 var foodArray = foodArrayArray[i];
                 for(int j = 0; j < foodArray?.Count; j++) {
+                    numFood++;
                     WitEntityData foodEntity = foodArray[j].AsWitEntity();
                     foundFood = foundFood || GetFood(foodEntity);
+                    if(numFood == 1)
+                        message += foodEntity?.value;
+                    else
+                        message += " and " + foodEntity?.value;
                 }
             }
 
@@ -76,6 +85,8 @@ namespace Meta.WitAi.Composer.Samples
                 string target = transform.parent.gameObject.GetComponent<GameController>().goalFood;
                 consoleCtrl.AddLineCharwise("<color=purple>Try again!</color> Your goal is " + target, cps);
             }
+
+            Speaker.Invoke(message);
         }
 
         private bool GetFood(WitEntityData foodEntity)
