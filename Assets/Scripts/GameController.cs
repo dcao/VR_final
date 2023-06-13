@@ -29,6 +29,8 @@ public class GameController : MonoBehaviour
     public LineRenderer rRayRenderer;
     public LineRenderer lRayRenderer;
 
+    public GameObject menu;
+
     public VoiceEvent Speaker;
 
     // Consts
@@ -37,7 +39,7 @@ public class GameController : MonoBehaviour
     public readonly Vector3 xfOffset = new Vector3(-2.0f, 0.0f, 0.0f);
     public float moveTime = 1.5f;
     private const float maxDistance = 10.0f;
-    private const float focusDistance = 0.5f;
+    private const float focusDistance = 0.8f;
 
     GestureDetector rightGD;
     GestureDetector leftGD;
@@ -50,6 +52,9 @@ public class GameController : MonoBehaviour
     public string goalFood;
 
     // private:
+    private Vector3 menuXl;
+    private Quaternion menuRot;
+
     private GameObject chess;
     private GameObject selected;
     private bool useVR;
@@ -72,6 +77,9 @@ public class GameController : MonoBehaviour
         rightGD = gdObjectR.GetComponent<GestureDetector>();
         leftGD = gdObjectL.GetComponent<GestureDetector>();
 
+        menuXl = menu.transform.position;
+        menuRot = menu.transform.rotation;
+
         Reinitialize();
     }
 
@@ -86,7 +94,7 @@ public class GameController : MonoBehaviour
             wit.Deactivate();
         }
 
-        int r = Random.Range(0, 2);
+        int r = Random.Range(0, 3);
         if (r == 0) {
             goalFood = "Pizza";
         } else if (r == 1) {
@@ -94,6 +102,10 @@ public class GameController : MonoBehaviour
         } else {
             goalFood = "Coffee";
         }
+
+        // Reset menu
+        menu.transform.position = menuXl;
+        menu.transform.rotation = menuRot;
 
         consoleCtrl.AddLine("Initializing scenario. Goal food: <b>" + goalFood + "</b>");
 
