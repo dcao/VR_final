@@ -8,6 +8,7 @@ namespace Meta.WitAi.Composer.Samples
     public class OrderFlow : MonoBehaviour
     {
         public GameObject console;
+        float cps = 80.0f;
 
         [SerializeField] string entityID = "food";
         ConsoleController consoleCtrl;
@@ -16,9 +17,13 @@ namespace Meta.WitAi.Composer.Samples
             consoleCtrl = console.GetComponent<ConsoleController>();
         }
 
+        public void SetCps(float val) {
+            cps = val;
+        }
+
         // Called whenever the user speaks
         public void OnSpeak(string line) {
-            consoleCtrl.AddLineCharwise("User: <color=green>" + line + "</color>", 80);
+            consoleCtrl.AddLineCharwise("User: <color=green>" + line + "</color>", cps);
         }
 
         // Called whenever a response is returned.
@@ -30,7 +35,7 @@ namespace Meta.WitAi.Composer.Samples
                 // TODO: Terminate early?
                 consoleCtrl.AddLine("<color=red>Error: </color>" + error);
             } else {
-                consoleCtrl.AddLineCharwise("<b>Cashier</b>: " + response, 80);
+                consoleCtrl.AddLineCharwise("<b>Cashier</b>: " + response, cps);
             }
         }
 

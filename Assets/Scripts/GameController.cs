@@ -19,7 +19,7 @@ public class GameController : MonoBehaviour
     // Consts
     public const int customerCount = 4;
     public const float waitPerCustomer = 10.0f;
-    public readonly Vector3 xfOffset = new Vector3(-3.0f, 0.0f, 0.0f);
+    public readonly Vector3 xfOffset = new Vector3(-2.0f, 0.0f, 0.0f);
     public const float moveTime = 1.5f;
     private const float maxDistance = 10.0f;
 
@@ -50,7 +50,7 @@ public class GameController : MonoBehaviour
         Reinitialize();
     }
 
-    void Reinitialize() {
+    public void Reinitialize() {
         StopAllCoroutines();
         consoleCtrl.AddLine("Initializing scenario");
 
@@ -60,7 +60,7 @@ public class GameController : MonoBehaviour
 
         // Spawn the other customers
         for (int i = 1; i <= customerCount - 1; i++) {
-            customers.Add(Instantiate(customerPrefab, transform.position + new Vector3(0.0f, -1.5f, 0.0f) + i * xfOffset, Quaternion.identity));
+            customers.Add(Instantiate(customerPrefab, transform.position + new Vector3(0.0f, 2.0f, 0.0f) + i * xfOffset, Quaternion.identity));
         }
 
         // We need this line to make the line movement work, not 100% sure why
@@ -73,7 +73,7 @@ public class GameController : MonoBehaviour
     IEnumerator LineMovement() {
         for (int i = 0; i < customerCount - 1; i++) {
             // Log status.
-            consoleCtrl.AddLineCharwise("Line status: <b><color=orange>position " + (customerCount - 1 - i) + "</color></b>", 80);
+            consoleCtrl.AddLine("Line status: <b><color=orange>position " + (customerCount - 1 - i) + "</color></b>");
 
             // First, wait for the waitPerCustomer.
             yield return new WaitForSeconds(waitPerCustomer);
@@ -89,7 +89,7 @@ public class GameController : MonoBehaviour
         }
 
         // Once we've gotten to this point, start the microphone procedure!
-        consoleCtrl.AddLineCharwise("Your turn to order! Speak your order into the mic. <color=green>Mic is enabled.</color>", 200);
+        consoleCtrl.AddLine("Your turn to order! Speak your order into the mic. <color=green>Mic is enabled.</color>");
         wit.ActivateSpeaking();
 
         // Because of consequences with how we coded this, all order flow interactiosn are handled by OrderFlow.
