@@ -9,7 +9,7 @@
 ## TODOs
 
 - [x] Voice integration
-- [ ] Gameplay loop
+- [x] Gameplay loop
 - [ ] Locomotion
 - [ ] UI
 - [ ] Grabbable menus
