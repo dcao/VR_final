@@ -59,13 +59,13 @@ public class GameController : MonoBehaviour
     }
 
     public void Reinitialize() {
-        StopAllCoroutines();
+        // StopAllCoroutines();
 
-        foreach (GameObject c in customers) {
-            Destroy(c);
-        }
-        customers.Clear();
-        wit.Deactivate();
+        // foreach (GameObject c in customers) {
+        //     Destroy(c);
+        // }
+        // customers.Clear();
+        // wit.Deactivate();
 
         consoleCtrl.AddLine("Initializing scenario");
 
@@ -208,9 +208,10 @@ public class GameController : MonoBehaviour
                 vrCam.transform.position = new Vector3(hit.point.x, transform.position.y, hit.point.z);
                 // hide chess indicator after transform
                 chess.SetActive(false);
+                rightGesture.name = "";
             }
-
         }
+
         prevGesture = string.Copy(rightGesture.name);
         return;
     }

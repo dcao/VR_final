@@ -37,7 +37,7 @@ namespace Meta.WitAi.Composer.Samples
 
         // Called whenever a response is returned.
         public void OnResponse(ComposerSessionData sessionData) {
-            consoleCtrl.AddLineCharwise("<b>Cashier</b>: " + sessionData.responseData.responsePhrase.Remove(sessionData.responseData.responsePhrase.Length - 1, 1), cps);
+            consoleCtrl.AddLineCharwise("<b>Cashier</b>: " + sessionData.responseData.responsePhrase, cps);
         }
 
         public void OnEnd(ComposerSessionData sessionData) {
