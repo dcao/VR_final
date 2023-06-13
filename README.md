@@ -6,6 +6,9 @@
 - **License**: [CC-BY-4.0](http://creativecommons.org/licenses/by/4.0/)
 - **Source**: [Sketchfab](https://sketchfab.com/3d-models/anime-cafe-1d4f3b7b7d5842d993fe2775d57aa33f)
 
+All of our features were implemented using the Oculus Integration SDKs and the Wit.ai Voice SDK
+integration package.
+
 ## TODOs
 
 - [x] Voice integration
